@@ -27,7 +27,9 @@ message QueryMsgByKeywordReply{
 message ProduceMsgToTopicRequest{
     string kafkaTopic = 1;
     int32 partition = 2;
-    string msg_json = 3;
+	string key = 3;
+    string msg_json = 4;
+
 }
 
 message ProduceMsgToTopicReply{

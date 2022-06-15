@@ -97,10 +97,11 @@ func (s *Server) QueryMsgByKeyword(ctx context.Context, in *kafkapb.QueryMsgByKe
 	*/
 	// cache, key: topic-keyword, value: gzip compressed msgValue
 	resp := new(kafkapb.QueryMsgByKeywordReply)
+	cacheKey := fmt.Sprintf("%s-%s", in.GetKafkaTopic(), in.GetKeyword())
 	//get from cache
-	if s.msgCache.Contains(in.GetKeyword()) {
+	if s.msgCache.Contains(cacheKey) {
 		lg.Info("got msg in cache")
-		compressedValue, _ := s.msgCache.Get(in.GetKeyword())
+		compressedValue, _ := s.msgCache.Get(cacheKey)
 		value, err := decompress(compressedValue.([]byte))
 		if err != nil {
 			return nil, errors.Wrap(err, "decompresse")
@@ -135,7 +136,7 @@ func (s *Server) QueryMsgByKeyword(ctx context.Context, in *kafkapb.QueryMsgByKe
 					return nil, errors.Wrap(err, "new gzip decoder")
 				}
 				//store to cache
-				s.msgCache.Add(in.GetKeyword(), msg.Value)
+				s.msgCache.Add(cacheKey, msg.Value)
 				//decompresse
 				uncompressed, err := io.ReadAll(r)
 				if err != nil {
@@ -151,7 +152,7 @@ func (s *Server) QueryMsgByKeyword(ctx context.Context, in *kafkapb.QueryMsgByKe
 			} else {
 				if ok, str := existsKeywordInBytes(msg.Value, in.GetKeyword()); ok {
 					// store to cache
-					s.msgCache.Add(in.GetKeyword(), msg.Value)
+					s.msgCache.Add(cacheKey, msg.Value)
 					resp.MsgJson = str
 					return resp, nil
 				}
@@ -164,7 +165,32 @@ func (s *Server) QueryMsgByKeyword(ctx context.Context, in *kafkapb.QueryMsgByKe
 }
 
 func (s *Server) ProduceMsgToTopic(ctx context.Context, in *kafkapb.ProduceMsgToTopicRequest) (*kafkapb.ProduceMsgToTopicReply, error) {
-	return nil, nil
+	writer := service.DialKafkaWriter("kafka", in.GetKafkaTopic())
+	// kafkautil.WriteGzipJSONContext(ctx, writer, "", in.GetMsgJson())
+	compressed, err := compress([]byte(in.GetMsgJson()))
+	if err != nil {
+		return nil, errors.Wrap(err, "compress")
+	}
+	err = writer.WriteMessages(ctx, kafka.Message{
+		Key:   []byte(in.GetKey()),
+		Value: compressed,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "write messagee")
+	}
+	return &kafkapb.ProduceMsgToTopicReply{Ok: true}, nil
+}
+
+func compress(original []byte) ([]byte, error) {
+	var buf bytes.Buffer
+	w := gzip.NewWriter(&buf)
+	if _, err := w.Write(original); err != nil {
+		return nil, errors.Wrap(err, "Encode json to gzip")
+	}
+	if err := w.Close(); err != nil {
+		return nil, errors.Wrap(err, "Encoder close")
+	}
+	return buf.Bytes(), nil
 }
 
 func existsKeywordInBytes(decompressedMsg []byte, keyword string) (bool, string) {

@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n3githubcom_Kaiya_kafka-chan_kafkapb_kafka-chan.proto\x12\x07kafkapb\"\x82\x01\n\x18QueryMsgByKeywordRequest\x12\x12\n\nkafkaTopic\x18\x01 \x01(\t\x12\x11\n\tpartition\x18\x02 \x01(\x05\x12\x0f\n\x07keyword\x18\x03 \x01(\t\x12.\n\x0ckeyword_from\x18\x04 \x01(\x0e\x32\x18.kafkapb.KeywordFromType\"*\n\x16QueryMsgByKeywordReply\x12\x10\n\x08msg_json\x18\x01 \x01(\t\"S\n\x18ProduceMsgToTopicRequest\x12\x12\n\nkafkaTopic\x18\x01 \x01(\t\x12\x11\n\tpartition\x18\x02 \x01(\x05\x12\x10\n\x08msg_json\x18\x03 \x01(\t\"$\n\x16ProduceMsgToTopicReply\x12\n\n\x02ok\x18\x01 \x01(\x08\"B\n\x19MakeMemoryLRUCacheRequest\x12\x12\n\nkafkaTopic\x18\x01 \x01(\t\x12\x11\n\tpartition\x18\x02 \x01(\x05\"%\n\x17MakeMemoryLRUCacheReply\x12\n\n\x02ok\x18\x01 \x01(\x08\")\n\x15QueryMsgByOffsetReply\x12\x10\n\x08msg_json\x18\x01 \x01(\t\"P\n\x17QueryMsgByOffsetRequest\x12\x12\n\nkafkaTopic\x18\x01 \x01(\t\x12\x11\n\tpartition\x18\x02 \x01(\x03\x12\x0e\n\x06offset\x18\x03 \x01(\x03*9\n\x0fKeywordFromType\x12\x11\n\rKAFKA_MSG_KEY\x10\x00\x12\x13\n\x0fKAFKA_MSG_VALUE\x10\x01\x32\xf7\x02\n\tKafkaChan\x12Y\n\x11QueryMsgByKeyword\x12!.kafkapb.QueryMsgByKeywordRequest\x1a\x1f.kafkapb.QueryMsgByKeywordReply\"\x00\x12Y\n\x11ProduceMsgToTopic\x12!.kafkapb.ProduceMsgToTopicRequest\x1a\x1f.kafkapb.ProduceMsgToTopicReply\"\x00\x12\\\n\x12MakeMemoryLRUCache\x12\".kafkapb.MakeMemoryLRUCacheRequest\x1a .kafkapb.MakeMemoryLRUCacheReply\"\x00\x12V\n\x10QueryMsgByOffset\x12 .kafkapb.QueryMsgByOffsetRequest\x1a\x1e.kafkapb.QueryMsgByOffsetReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n3githubcom_Kaiya_kafka-chan_kafkapb_kafka-chan.proto\x12\x07kafkapb\"\x82\x01\n\x18QueryMsgByKeywordRequest\x12\x12\n\nkafkaTopic\x18\x01 \x01(\t\x12\x11\n\tpartition\x18\x02 \x01(\x05\x12\x0f\n\x07keyword\x18\x03 \x01(\t\x12.\n\x0ckeyword_from\x18\x04 \x01(\x0e\x32\x18.kafkapb.KeywordFromType\"*\n\x16QueryMsgByKeywordReply\x12\x10\n\x08msg_json\x18\x01 \x01(\t\"`\n\x18ProduceMsgToTopicRequest\x12\x12\n\nkafkaTopic\x18\x01 \x01(\t\x12\x11\n\tpartition\x18\x02 \x01(\x05\x12\x0b\n\x03key\x18\x03 \x01(\t\x12\x10\n\x08msg_json\x18\x04 \x01(\t\"$\n\x16ProduceMsgToTopicReply\x12\n\n\x02ok\x18\x01 \x01(\x08\"B\n\x19MakeMemoryLRUCacheRequest\x12\x12\n\nkafkaTopic\x18\x01 \x01(\t\x12\x11\n\tpartition\x18\x02 \x01(\x05\"%\n\x17MakeMemoryLRUCacheReply\x12\n\n\x02ok\x18\x01 \x01(\x08\")\n\x15QueryMsgByOffsetReply\x12\x10\n\x08msg_json\x18\x01 \x01(\t\"P\n\x17QueryMsgByOffsetRequest\x12\x12\n\nkafkaTopic\x18\x01 \x01(\t\x12\x11\n\tpartition\x18\x02 \x01(\x03\x12\x0e\n\x06offset\x18\x03 \x01(\x03*9\n\x0fKeywordFromType\x12\x11\n\rKAFKA_MSG_KEY\x10\x00\x12\x13\n\x0fKAFKA_MSG_VALUE\x10\x01\x32\xf7\x02\n\tKafkaChan\x12Y\n\x11QueryMsgByKeyword\x12!.kafkapb.QueryMsgByKeywordRequest\x1a\x1f.kafkapb.QueryMsgByKeywordReply\"\x00\x12Y\n\x11ProduceMsgToTopic\x12!.kafkapb.ProduceMsgToTopicRequest\x1a\x1f.kafkapb.ProduceMsgToTopicReply\"\x00\x12\\\n\x12MakeMemoryLRUCache\x12\".kafkapb.MakeMemoryLRUCacheRequest\x1a .kafkapb.MakeMemoryLRUCacheReply\"\x00\x12V\n\x10QueryMsgByOffset\x12 .kafkapb.QueryMsgByOffsetRequest\x1a\x1e.kafkapb.QueryMsgByOffsetReply\"\x00\x62\x06proto3'
 )
 
 _KEYWORDFROMTYPE = _descriptor.EnumDescriptor(
@@ -43,8 +43,8 @@ _KEYWORDFROMTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=596,
-  serialized_end=653,
+  serialized_start=609,
+  serialized_end=666,
 )
 _sym_db.RegisterEnumDescriptor(_KEYWORDFROMTYPE)
 
@@ -162,8 +162,15 @@ _PRODUCEMSGTOTOPICREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='msg_json', full_name='kafkapb.ProduceMsgToTopicRequest.msg_json', index=2,
+      name='key', full_name='kafkapb.ProduceMsgToTopicRequest.key', index=2,
       number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='msg_json', full_name='kafkapb.ProduceMsgToTopicRequest.msg_json', index=3,
+      number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -181,7 +188,7 @@ _PRODUCEMSGTOTOPICREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=241,
-  serialized_end=324,
+  serialized_end=337,
 )
 
 
@@ -212,8 +219,8 @@ _PRODUCEMSGTOTOPICREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=326,
-  serialized_end=362,
+  serialized_start=339,
+  serialized_end=375,
 )
 
 
@@ -251,8 +258,8 @@ _MAKEMEMORYLRUCACHEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=364,
-  serialized_end=430,
+  serialized_start=377,
+  serialized_end=443,
 )
 
 
@@ -283,8 +290,8 @@ _MAKEMEMORYLRUCACHEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=432,
-  serialized_end=469,
+  serialized_start=445,
+  serialized_end=482,
 )
 
 
@@ -315,8 +322,8 @@ _QUERYMSGBYOFFSETREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=471,
-  serialized_end=512,
+  serialized_start=484,
+  serialized_end=525,
 )
 
 
@@ -361,8 +368,8 @@ _QUERYMSGBYOFFSETREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=514,
-  serialized_end=594,
+  serialized_start=527,
+  serialized_end=607,
 )
 
 _QUERYMSGBYKEYWORDREQUEST.fields_by_name['keyword_from'].enum_type = _KEYWORDFROMTYPE
@@ -442,8 +449,8 @@ _KAFKACHAN = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=656,
-  serialized_end=1031,
+  serialized_start=669,
+  serialized_end=1044,
   methods=[
   _descriptor.MethodDescriptor(
     name='QueryMsgByKeyword',

@@ -1594,12 +1594,24 @@ public final class KafkaChanOuterClass {
     int getPartition();
 
     /**
-     * <code>string msg_json = 3;</code>
+     * <code>string key = 3;</code>
+     * @return The key.
+     */
+    java.lang.String getKey();
+    /**
+     * <code>string key = 3;</code>
+     * @return The bytes for key.
+     */
+    com.google.protobuf.ByteString
+        getKeyBytes();
+
+    /**
+     * <code>string msg_json = 4;</code>
      * @return The msgJson.
      */
     java.lang.String getMsgJson();
     /**
-     * <code>string msg_json = 3;</code>
+     * <code>string msg_json = 4;</code>
      * @return The bytes for msgJson.
      */
     com.google.protobuf.ByteString
@@ -1619,6 +1631,7 @@ public final class KafkaChanOuterClass {
     }
     private ProduceMsgToTopicRequest() {
       kafkaTopic_ = "";
+      key_ = "";
       msgJson_ = "";
     }
 
@@ -1664,6 +1677,12 @@ public final class KafkaChanOuterClass {
               break;
             }
             case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              key_ = s;
+              break;
+            }
+            case 34: {
               java.lang.String s = input.readStringRequireUtf8();
 
               msgJson_ = s;
@@ -1747,10 +1766,46 @@ public final class KafkaChanOuterClass {
       return partition_;
     }
 
-    public static final int MSG_JSON_FIELD_NUMBER = 3;
+    public static final int KEY_FIELD_NUMBER = 3;
+    private volatile java.lang.Object key_;
+    /**
+     * <code>string key = 3;</code>
+     * @return The key.
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        key_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string key = 3;</code>
+     * @return The bytes for key.
+     */
+    public com.google.protobuf.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MSG_JSON_FIELD_NUMBER = 4;
     private volatile java.lang.Object msgJson_;
     /**
-     * <code>string msg_json = 3;</code>
+     * <code>string msg_json = 4;</code>
      * @return The msgJson.
      */
     public java.lang.String getMsgJson() {
@@ -1766,7 +1821,7 @@ public final class KafkaChanOuterClass {
       }
     }
     /**
-     * <code>string msg_json = 3;</code>
+     * <code>string msg_json = 4;</code>
      * @return The bytes for msgJson.
      */
     public com.google.protobuf.ByteString
@@ -1803,8 +1858,11 @@ public final class KafkaChanOuterClass {
       if (partition_ != 0) {
         output.writeInt32(2, partition_);
       }
+      if (!getKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, key_);
+      }
       if (!getMsgJsonBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, msgJson_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, msgJson_);
       }
       unknownFields.writeTo(output);
     }
@@ -1822,8 +1880,11 @@ public final class KafkaChanOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, partition_);
       }
+      if (!getKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, key_);
+      }
       if (!getMsgJsonBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, msgJson_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, msgJson_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1844,6 +1905,8 @@ public final class KafkaChanOuterClass {
           .equals(other.getKafkaTopic())) return false;
       if (getPartition()
           != other.getPartition()) return false;
+      if (!getKey()
+          .equals(other.getKey())) return false;
       if (!getMsgJson()
           .equals(other.getMsgJson())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -1861,6 +1924,8 @@ public final class KafkaChanOuterClass {
       hash = (53 * hash) + getKafkaTopic().hashCode();
       hash = (37 * hash) + PARTITION_FIELD_NUMBER;
       hash = (53 * hash) + getPartition();
+      hash = (37 * hash) + KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getKey().hashCode();
       hash = (37 * hash) + MSG_JSON_FIELD_NUMBER;
       hash = (53 * hash) + getMsgJson().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -2000,6 +2065,8 @@ public final class KafkaChanOuterClass {
 
         partition_ = 0;
 
+        key_ = "";
+
         msgJson_ = "";
 
         return this;
@@ -2030,6 +2097,7 @@ public final class KafkaChanOuterClass {
         kafkapb.KafkaChanOuterClass.ProduceMsgToTopicRequest result = new kafkapb.KafkaChanOuterClass.ProduceMsgToTopicRequest(this);
         result.kafkaTopic_ = kafkaTopic_;
         result.partition_ = partition_;
+        result.key_ = key_;
         result.msgJson_ = msgJson_;
         onBuilt();
         return result;
@@ -2085,6 +2153,10 @@ public final class KafkaChanOuterClass {
         }
         if (other.getPartition() != 0) {
           setPartition(other.getPartition());
+        }
+        if (!other.getKey().isEmpty()) {
+          key_ = other.key_;
+          onChanged();
         }
         if (!other.getMsgJson().isEmpty()) {
           msgJson_ = other.msgJson_;
@@ -2225,9 +2297,85 @@ public final class KafkaChanOuterClass {
         return this;
       }
 
+      private java.lang.Object key_ = "";
+      /**
+       * <code>string key = 3;</code>
+       * @return The key.
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string key = 3;</code>
+       * @return The bytes for key.
+       */
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string key = 3;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        key_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKey() {
+        
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string key = 3;</code>
+       * @param value The bytes for key to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object msgJson_ = "";
       /**
-       * <code>string msg_json = 3;</code>
+       * <code>string msg_json = 4;</code>
        * @return The msgJson.
        */
       public java.lang.String getMsgJson() {
@@ -2243,7 +2391,7 @@ public final class KafkaChanOuterClass {
         }
       }
       /**
-       * <code>string msg_json = 3;</code>
+       * <code>string msg_json = 4;</code>
        * @return The bytes for msgJson.
        */
       public com.google.protobuf.ByteString
@@ -2260,7 +2408,7 @@ public final class KafkaChanOuterClass {
         }
       }
       /**
-       * <code>string msg_json = 3;</code>
+       * <code>string msg_json = 4;</code>
        * @param value The msgJson to set.
        * @return This builder for chaining.
        */
@@ -2275,7 +2423,7 @@ public final class KafkaChanOuterClass {
         return this;
       }
       /**
-       * <code>string msg_json = 3;</code>
+       * <code>string msg_json = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearMsgJson() {
@@ -2285,7 +2433,7 @@ public final class KafkaChanOuterClass {
         return this;
       }
       /**
-       * <code>string msg_json = 3;</code>
+       * <code>string msg_json = 4;</code>
        * @param value The bytes for msgJson to set.
        * @return This builder for chaining.
        */
@@ -5285,27 +5433,27 @@ public final class KafkaChanOuterClass {
       "partition\030\002 \001(\005\022\017\n\007keyword\030\003 \001(\t\022.\n\014keyw" +
       "ord_from\030\004 \001(\0162\030.kafkapb.KeywordFromType" +
       "\"*\n\026QueryMsgByKeywordReply\022\020\n\010msg_json\030\001" +
-      " \001(\t\"S\n\030ProduceMsgToTopicRequest\022\022\n\nkafk" +
-      "aTopic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\005\022\020\n\010msg_j" +
-      "son\030\003 \001(\t\"$\n\026ProduceMsgToTopicReply\022\n\n\002o" +
-      "k\030\001 \001(\010\"B\n\031MakeMemoryLRUCacheRequest\022\022\n\n" +
-      "kafkaTopic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\005\"%\n\027M" +
-      "akeMemoryLRUCacheReply\022\n\n\002ok\030\001 \001(\010\")\n\025Qu" +
-      "eryMsgByOffsetReply\022\020\n\010msg_json\030\001 \001(\t\"P\n" +
-      "\027QueryMsgByOffsetRequest\022\022\n\nkafkaTopic\030\001" +
-      " \001(\t\022\021\n\tpartition\030\002 \001(\003\022\016\n\006offset\030\003 \001(\003*" +
-      "9\n\017KeywordFromType\022\021\n\rKAFKA_MSG_KEY\020\000\022\023\n" +
-      "\017KAFKA_MSG_VALUE\020\0012\367\002\n\tKafkaChan\022Y\n\021Quer" +
-      "yMsgByKeyword\022!.kafkapb.QueryMsgByKeywor" +
-      "dRequest\032\037.kafkapb.QueryMsgByKeywordRepl" +
-      "y\"\000\022Y\n\021ProduceMsgToTopic\022!.kafkapb.Produ" +
-      "ceMsgToTopicRequest\032\037.kafkapb.ProduceMsg" +
-      "ToTopicReply\"\000\022\\\n\022MakeMemoryLRUCache\022\".k" +
-      "afkapb.MakeMemoryLRUCacheRequest\032 .kafka" +
-      "pb.MakeMemoryLRUCacheReply\"\000\022V\n\020QueryMsg" +
-      "ByOffset\022 .kafkapb.QueryMsgByOffsetReque" +
-      "st\032\036.kafkapb.QueryMsgByOffsetReply\"\000b\006pr" +
-      "oto3"
+      " \001(\t\"`\n\030ProduceMsgToTopicRequest\022\022\n\nkafk" +
+      "aTopic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\005\022\013\n\003key\030\003" +
+      " \001(\t\022\020\n\010msg_json\030\004 \001(\t\"$\n\026ProduceMsgToTo" +
+      "picReply\022\n\n\002ok\030\001 \001(\010\"B\n\031MakeMemoryLRUCac" +
+      "heRequest\022\022\n\nkafkaTopic\030\001 \001(\t\022\021\n\tpartiti" +
+      "on\030\002 \001(\005\"%\n\027MakeMemoryLRUCacheReply\022\n\n\002o" +
+      "k\030\001 \001(\010\")\n\025QueryMsgByOffsetReply\022\020\n\010msg_" +
+      "json\030\001 \001(\t\"P\n\027QueryMsgByOffsetRequest\022\022\n" +
+      "\nkafkaTopic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\003\022\016\n\006" +
+      "offset\030\003 \001(\003*9\n\017KeywordFromType\022\021\n\rKAFKA" +
+      "_MSG_KEY\020\000\022\023\n\017KAFKA_MSG_VALUE\020\0012\367\002\n\tKafk" +
+      "aChan\022Y\n\021QueryMsgByKeyword\022!.kafkapb.Que" +
+      "ryMsgByKeywordRequest\032\037.kafkapb.QueryMsg" +
+      "ByKeywordReply\"\000\022Y\n\021ProduceMsgToTopic\022!." +
+      "kafkapb.ProduceMsgToTopicRequest\032\037.kafka" +
+      "pb.ProduceMsgToTopicReply\"\000\022\\\n\022MakeMemor" +
+      "yLRUCache\022\".kafkapb.MakeMemoryLRUCacheRe" +
+      "quest\032 .kafkapb.MakeMemoryLRUCacheReply\"" +
+      "\000\022V\n\020QueryMsgByOffset\022 .kafkapb.QueryMsg" +
+      "ByOffsetRequest\032\036.kafkapb.QueryMsgByOffs" +
+      "etReply\"\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5328,7 +5476,7 @@ public final class KafkaChanOuterClass {
     internal_static_kafkapb_ProduceMsgToTopicRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kafkapb_ProduceMsgToTopicRequest_descriptor,
-        new java.lang.String[] { "KafkaTopic", "Partition", "MsgJson", });
+        new java.lang.String[] { "KafkaTopic", "Partition", "Key", "MsgJson", });
     internal_static_kafkapb_ProduceMsgToTopicReply_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_kafkapb_ProduceMsgToTopicReply_fieldAccessorTable = new
