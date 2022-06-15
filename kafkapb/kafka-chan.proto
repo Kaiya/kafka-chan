@@ -1,0 +1,54 @@
+syntax = "proto3";
+package kafkapb;
+
+service KafkaChan{
+    rpc QueryMsgByKeyword(QueryMsgByKeywordRequest) returns (QueryMsgByKeywordReply){}
+    rpc ProduceMsgToTopic(ProduceMsgToTopicRequest) returns (ProduceMsgToTopicReply){}
+	rpc MakeMemoryLRUCache(MakeMemoryLRUCacheRequest) returns (MakeMemoryLRUCacheReply){}
+	rpc QueryMsgByOffset(QueryMsgByOffsetRequest) returns (QueryMsgByOffsetReply){}
+}
+enum KeywordFromType{
+    KAFKA_MSG_KEY = 0;
+    KAFKA_MSG_VALUE = 1;
+}
+
+message QueryMsgByKeywordRequest{
+    string kafkaTopic = 1;
+    int32 partition = 2;
+    string keyword = 3;
+    KeywordFromType keyword_from = 4;
+}
+
+message QueryMsgByKeywordReply{
+    string msg_json = 1;
+
+}
+
+message ProduceMsgToTopicRequest{
+    string kafkaTopic = 1;
+    int32 partition = 2;
+    string msg_json = 3;
+}
+
+message ProduceMsgToTopicReply{
+    bool ok = 1;
+}
+
+message MakeMemoryLRUCacheRequest{
+	string kafkaTopic = 1;
+	int32 partition = 2;
+}
+
+message MakeMemoryLRUCacheReply{
+	bool ok = 1;
+}
+
+message QueryMsgByOffsetReply{
+	string msg_json = 1;
+}
+
+message QueryMsgByOffsetRequest{
+	string kafkaTopic = 1;
+	int64 partition = 2;
+	int64 offset = 3;
+}
