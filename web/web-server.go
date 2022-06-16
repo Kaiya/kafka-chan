@@ -32,11 +32,82 @@ func NewWebServer(rpcServer server.Server) *WebServer {
 		{"QueryMsg", "POST", "/msg", s.queryMsgHandler},
 		{"ProduceMsg", "POST", "/produce_msg", s.produceMsgHandler},
 		{"ProduceQueryMsg", "POST", "/produce_query_msg", s.produceQueryMsgHandler},
+		{"ReplayMsgGet", "GET", "/msg/replay", s.replayMsgGet},
+		{"ReplayMsgPost", "POST", "/msg/replay", s.replayMsgPost},
 	}
 	for _, r := range routes {
 		s.Router.PathPrefix("/").Methods(r.Method).Path(r.Path).Name(r.Name).Handler(r.Handler)
 	}
 	return s
+}
+func (s *WebServer) replayMsgGet(w http.ResponseWriter, r *http.Request) {
+	topic := r.FormValue("topic")
+	partition := r.FormValue("partition")
+	offset := r.FormValue("offset")
+	key := r.FormValue("key")
+	if topic == "" || partition == "" || offset == "" || key == "" {
+		http.Error(w, "topic, partition, offset, or key is empty", http.StatusBadRequest)
+	}
+	ok, err := s.replayMsg(topic, partition, offset, key)
+	if err != nil {
+		http.Error(w, "call replay msg", http.StatusBadRequest)
+		return
+	}
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(200)
+	w.Write([]byte(strconv.FormatBool(ok)))
+}
+func (s *WebServer) replayMsgPost(w http.ResponseWriter, r *http.Request) {
+	data := struct {
+		Topic     string `json:"topic"`
+		Partition string `json:"partition"`
+		Offset    string `json:"offset"`
+		Key       string `json:"key"`
+	}{}
+	if data.Topic == "" || data.Partition == "" || data.Offset == "" || data.Key == "" {
+		http.Error(w, "topic, partition, offset, or key is empty", http.StatusBadRequest)
+	}
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, "decode request", http.StatusBadRequest)
+		return
+	}
+	ok, err := s.replayMsg(data.Topic, data.Partition, data.Offset, data.Key)
+	if err != nil {
+		http.Error(w, "call replay msg", http.StatusBadRequest)
+		return
+	}
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(200)
+	w.Write([]byte(strconv.FormatBool(ok)))
+
+}
+
+func (s *WebServer) replayMsg(topic, partition, offset, key string) (bool, error) {
+	p, perr := strconv.Atoi(partition)
+	o, oerr := strconv.Atoi(offset)
+	if perr != nil || oerr != nil {
+		return false, errors.New("parse string error")
+	}
+	ctx := context.Background()
+	reply, err := s.rpcSrv.QueryMsgByOffset(ctx, &kafkapb.QueryMsgByOffsetRequest{
+		KafkaTopic: topic,
+		Partition:  int64(p),
+		Offset:     int64(o),
+	})
+	if err != nil {
+		return false, errors.Wrap(err, "call query msg by offset")
+	}
+	resp, err := s.rpcSrv.ProduceMsgToTopic(ctx, &kafkapb.ProduceMsgToTopicRequest{
+		KafkaTopic: topic,
+		Partition:  int32(p),
+		MsgJson:    reply.GetMsgJson(),
+		Key:        key,
+	})
+	if err != nil {
+		return false, errors.Wrap(err, "call produce msg to topic")
+	}
+	return resp.GetOk(), nil
 }
 
 func (s *WebServer) produceQueryMsgHandler(w http.ResponseWriter, r *http.Request) {
