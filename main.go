@@ -13,12 +13,16 @@ import (
 var (
 	port       = flags.Int("port", 8756, "server listen port")
 	consumerId = flags.String("consumerId", "kafka-channel-consumer", "consumer group ID for consuming kafka msg")
+	brokers    = flags.Slice("brokers", []string{"kafka"}, "kafka brokers")
 )
 
 func main() {
 	flags.Parse()
+	if len(brokers()) < 1 {
+		panic("brokers is empty")
+	}
 
-	server := server.NewServer(consumerId())
+	server := server.NewServer(consumerId(), brokers())
 	webSrv := web.NewWebServer(*server)
 	ms := service.NewMicroService(
 		service.WithConsulName(flags.GetServiceName()),

@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
-	"math/rand"
+	"time"
 
 	"fmt"
 	"io"
 	"strings"
 
 	"github.com/Kaiya/kafka-chan/kafkapb"
+	"github.com/Kaiya/kafka-chan/utils"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/hoveychen/kafka-go"
 	"github.com/pkg/errors"
@@ -23,9 +24,10 @@ type Server struct {
 	consumerId  string
 	kafkaClient *kafka.Client
 	msgCache    *lru.Cache
+	brokers     []string
 }
 
-func NewServer(consumerId string) *Server {
+func NewServer(consumerId string, brokers []string) *Server {
 	cache, err := lru.New(102400)
 	if err != nil {
 		lg.Error("error creating memory cache: ", err)
@@ -34,44 +36,35 @@ func NewServer(consumerId string) *Server {
 		consumerId:  consumerId,
 		kafkaClient: service.DialKafkaClient("kafka"),
 		msgCache:    cache,
+		brokers:     brokers,
 	}
 }
 
-/*
-func writer2HttpRespWriter(w http.ResponseWriter) error {
-}
-*/
 func (s *Server) MakeMemoryLRUCache(ctx context.Context, in *kafkapb.MakeMemoryLRUCacheRequest) (*kafkapb.MakeMemoryLRUCacheReply, error) {
 	return nil, nil
 }
 func (s *Server) QueryMsgByOffset(ctx context.Context, in *kafkapb.QueryMsgByOffsetRequest) (*kafkapb.QueryMsgByOffsetReply, error) {
-	conn, err := service.DialKafkaConn("kafka")
+	reader := kafka.NewReader(kafka.ReaderConfig{
+		Brokers: s.brokers,
+		Dialer: &kafka.Dialer{
+			Resolver:  utils.NewConsulKafkaResolver(s.brokers[0]),
+			Timeout:   10 * time.Second,
+			DualStack: true,
+		},
+		Topic:          in.GetKafkaTopic(),
+		Partition:      int(in.GetPartition()),
+		MinBytes:       10e3, // 10KB
+		MaxBytes:       10e6, // 10MB
+		CommitInterval: time.Second * 10,
+	})
+	err := reader.SetOffset(in.GetOffset())
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "reader setoffset")
 	}
-	defer conn.Close()
-	ps, err := conn.ReadPartitions(in.GetKafkaTopic())
+	msg, err := reader.FetchMessage(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "fetch msg")
 	}
-	if len(ps) == 0 {
-		return nil, errors.New("Failed to get any partition")
-	}
-	p := ps[rand.Intn(len(ps))]
-	pc, err := service.DialKafkaPartition(ctx, "kafka", p)
-	if err != nil {
-		return nil, err
-	}
-	offset, err := pc.Seek(in.GetOffset(), kafka.SeekEnd)
-	if err != nil {
-		return nil, err
-	}
-	msg, err := pc.ReadMessage(1e7)
-	if err != nil {
-		return nil, err
-	}
-	lg.Info("got offset: ", offset)
-	lg.Info("msg key: ", string(msg.Key))
 	retByteArray := msg.Value
 	if kafkautil.IsGzipCompressed(msg.Value) {
 		uncompressed, err := decompress(msg.Value)
